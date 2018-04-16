@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class MainActivity extends AppCompatActivity implements InvocationHandler , AnimationInterface{
+public class MainActivity extends AppCompatActivity implements InvocationHandler {
 
     private AnimationInterface mAniamationInterface;
 
@@ -17,20 +17,13 @@ public class MainActivity extends AppCompatActivity implements InvocationHandler
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ClassLoader animationInterfaceClassloader = AnimationInterface.class.getClassLoader();
-        Log.d("dyj", "animationInterfaceClassloader:" + animationInterfaceClassloader);
-        ClassLoader mainActivityClassLoader = MainActivity.class.getClassLoader();
-        Log.d("dyj", "mainActivityClassLoader:" + mainActivityClassLoader.toString());
-        ClassLoader classLoader = this.getClassLoader();
-        Log.d("dyj", "classLoader:" + classLoader);
-        mAniamationInterface = (AnimationInterface) Proxy.newProxyInstance(classLoader, new Class[]{AnimationInterface.class}, this);
+        mAniamationInterface = (AnimationInterface) Proxy.newProxyInstance(AnimationInterface.class.getClassLoader(), new Class[]{AnimationInterface.class}, this);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Method m = getClass().getDeclaredMethod(method.getName(), method.getParameterTypes());
-        Log.d("dyj", "m:" + m + ",method:" + method);
-        return method.invoke(this, args);
+        return m.invoke(this, args);
     }
 
     public void stop() {
